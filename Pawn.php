@@ -8,6 +8,11 @@ class Pawn
     public $desk = null; // я боюсь будут конфликты имен
 
     public function __construct($color, $position, $desk) {
+
+        if ($color !== 'white' && $color !== 'black') {
+            throw new InvalidArgumentException("Color must be either 'white' or 'black'.");
+        }
+
         $this->color = $color;//  цвет фигуры
         $this->position();// вводим сетку шахматной доски
         $this->setPosition($position); // Устанавливаем текущую позицию фигуры
@@ -50,9 +55,9 @@ class Pawn
 
     public function repr() {
         if($this->isWhite()) {
-            return "*";
+            return "о";
         } else {
-            return "o";
+            return "*";
         }
     }
 
