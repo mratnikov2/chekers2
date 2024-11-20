@@ -10,30 +10,21 @@ class Desk
         $this->yacheika = array_fill(0, 8, array_fill(0, 8, null));
         // это специальная функция которая заполняет массив и я не уверен что это правильно
 
-        // Размещение белых шашек первая версия
-//        for ($row = 0; $row < 3; $row++) {
-//            for ($col = 0; $col < 8; $col++) {
-//                if (($row + $col) % 2 != 0) { // Проверка на темную клетку
-//                    $this->yacheika[$row][$col] = new Pawn('white', 'A2',$this);
-//
-//                }
-//            }
-
         // Размещение белых шашек (на строках 1, 2, 3, на темных клетках)
         for ($row = 5; $row < 8; $row++) {
             for ($col = 0; $col < 8; $col++) {
                 if (($row + $col) % 2 != 0) { // Проверка на темную клетку
-                    $this->yacheika[7 - $row][$col] = new Pawn('white', 'A2', $this);
-                } else {
-                    $this->yacheika[7 - $row][$col] = null; // Светлая клетка остаётся пустой
-                }
-            }
-        }
 
-        // Заполнение строк 4 и 5 (пустые клетки)
-        for ($row = 3; $row < 5; $row++) {
-            for ($col = 0; $col < 8; $col++) {
-                $this->yacheika[$row][$col] = null; // Все клетки пустые
+//                    // впихиваю новый экземпляр
+//                    $newPawn = new Pawn('white', [$row, $col], $this);
+//
+                    $coordinates = $this->getPosition($row, $col);
+
+                    // впихивыю метод в цикл
+                    $this->yacheika[7 - $row][$col] = new Pawn('white', $coordinates, $this);
+
+//                    $this->yacheika[7 - $row][$col] = new Pawn('white', '', $this);
+                }
             }
         }
 
@@ -41,15 +32,17 @@ class Desk
         for ($row = 0; $row < 3; $row++) {
             for ($col = 0; $col < 8; $col++) {
                 if (($row + $col) % 2 != 0) { // Проверка на темную клетку
-                    $this->yacheika[7 - $row][$col] = new Pawn('black', 'B1', $this);
-                } else {
-                    $this->yacheika[7 - $row][$col] = null; // Светлая клетка остаётся пустой
+                    $coordinates = $this->getPosition($row, $col);
+
+                    // впихивыю метод в цикл
+                    $this->yacheika[7 - $row][$col] = new Pawn('black', $coordinates, $this);
+
                 }
+
             }
         }
-
-
     }
+
 
 
     public function repr()
@@ -75,6 +68,27 @@ class Desk
             echo "\n"; // Переход на новую строку
         }
     }
+
+    public function getPosition($row, $col) {
+        // Преобразуем номер столбца в букву (A-H)
+        $column = chr(ord('A') + $col);
+
+        // Преобразуем номер строки (0-7) в шахматную нотацию (8-1)
+        $rowNumber = $row + 1;
+
+        // Возвращаем строку позиции
+        return $column . $rowNumber;
+    }
+
+    public function getCell($row, $col)
+    {
+        return $this->yacheika[$row][$col];
+    }
+
 }
+
+
+
+
 
 

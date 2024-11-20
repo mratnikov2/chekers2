@@ -14,34 +14,24 @@ class Pawn
         }
 
         $this->color = $color;//  цвет фигуры
-        $this->position();// вводим сетку шахматной доски
-        $this->setPosition($position); // Устанавливаем текущую позицию фигуры
+        $this->pos = $position;
         $this->desk = $desk; // доска, но я не уверен в таком впихивании
     }
 
+    // не уверен что я делаю
+    public function index(){
+        $massiv = []; //обьявили массив в который будем записывать
+        $column = ord(strtoupper($this->pos[0])) - ord('A'); // Преобразуем букву в индекс столбца
+        $row = 8 - intval($this->pos[1]); // Преобразуем цифру в индекс строки
+        $massiv = [$row, $column]; // его можно было и не обьявлять на 23 а сразу на 26 (это дубляж)
+
+        return $massiv;
+    }
 
     public function position()
     {
-
-        $letters = range('A', 'H');
-        $numbers = range(1, 8);
-
-        foreach ($letters as $letter) {
-            foreach ($numbers as $number) {
-                $this->pos["$letter$number"] = null;
-            }
-        }
+        return $this->pos;
     }
-
-    public function setPosition($position) {
-        if (array_key_exists($position, $this->pos)) {
-            $this->pos[$position] = $this;  // идея о том что устанавливаем фигуру на указанной позиции
-        } else {
-            throw new Exception("Invalid position: $position");
-        }
-    }
-
-
 
     public function isWhite()
     {
