@@ -15,15 +15,10 @@ class Desk
             for ($col = 0; $col < 8; $col++) {
                 if (($row + $col) % 2 != 0) { // Проверка на темную клетку
 
-//                    // впихиваю новый экземпляр
-//                    $newPawn = new Pawn('white', [$row, $col], $this);
-//
                     $coordinates = $this->getPosition($row, $col);
 
                     // впихивыю метод в цикл
                     $this->yacheika[7 - $row][$col] = new Pawn('white', $coordinates, $this);
-
-//                    $this->yacheika[7 - $row][$col] = new Pawn('white', '', $this);
                 }
             }
         }
@@ -38,7 +33,6 @@ class Desk
                     $this->yacheika[7 - $row][$col] = new Pawn('black', $coordinates, $this);
 
                 }
-
             }
         }
     }
@@ -80,10 +74,41 @@ class Desk
         return $column . $rowNumber;
     }
 
+    public function getPawn($pos) {
+
+        // Разделяем позицию на букву и цифру, но этот код повторяется и я бы его вынес куда-то
+        $column = ord($pos[0]) - ord('A'); // Преобразуем букву в индекс столбца (0-7)
+        $row = (int) $pos[1] - 1;          // Преобразуем номер строки в индекс массива (1-8 -> 0-7)
+
+        // Проверяем, что индексы в пределах границ доски
+        if ($column < 0 || $column >= 8 || $row < 0 || $row >= 8) {
+            throw new InvalidArgumentException("Такой границы нет: $pos");
+        }
+
+        // Возвращаем клетку доски (null, если клетка пуста, или объект Pawn, если там есть пешка)
+        return $this->getCell($row, $column);
+    }
+
     public function getCell($row, $col)
     {
         return $this->yacheika[$row][$col];
     }
+
+    public function setPawn($pos, $pawn)
+    {
+        // Преобразуем позицию $pos в индексы строки и столбца но этот код повторяется и я бы его вынес куда-то
+        $column = ord($pos[0]) - ord('A'); // Преобразуем букву в индекс столбца (0-7)
+        $row = 8 - (int) $pos[1];          // Преобразуем шахматную строку (1-8) в индекс массива (0-7)
+
+        // Проверяем, что индексы в пределах границ доски
+        if ($column < 0 || $column >= 8 || $row < 0 || $row >= 8) {
+            throw new InvalidArgumentException("Invalid position: $pos");
+        }
+
+        // Устанавливаем шашку или null на указанную клетку
+        $this->yacheika[$row][$column] = $pawn;
+    }
+
 
 }
 

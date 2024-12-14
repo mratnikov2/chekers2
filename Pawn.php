@@ -51,4 +51,66 @@ class Pawn
         }
     }
 
+    // осторожно возможно полная чушь
+
+    public function move($newPos)
+    {
+        // Получаем текущую позицию
+        $currentPos = $this->position;
+
+        // Преобразуем текущую и новую позицию в индексы и это опять таки дубляж кода
+        $currentCol = ord($currentPos[0]) - ord('A'); // Столбец текущей позиции
+        $currentRow = 8 - (int)$currentPos[1];       // Строка текущей позиции
+
+        $newCol = ord($newPos[0]) - ord('A');        // Столбец новой позиции
+        $newRow = 8 - (int)$newPos[1];              // Строка новой позиции
+
+        // Вычисляем разницу между текущей и новой позицией
+        $rowDiff = $newRow - $currentRow;
+        $colDiff = abs($newCol - $currentCol);
+
+        // Проверяем, что движение происходит строго по диагонали
+        if (abs($rowDiff) !== $colDiff) {
+            return false; // я не уверен что это по диогонали
+        }
+
+        // Проверка на обычное передвижение (одна клетка)
+        if (abs($rowDiff) === 1 && $colDiff === 1) {
+            if ($this->desk->getPawn($newPos) === null) {
+                // Клетка свободна, перемещаем
+                $this->desk->setPawn($this->position, null); // Освобождаем текущую клетку
+                $this->desk->setPawn($newPos, $this);        // Устанавливаем на новую клетку
+                $this->position = $newPos;                  // Обновляем позицию
+                return true;
+            }
+            return false; // Клетка занята
+        }
+
+        // Проверка на прыжок через вражескую шашку
+        if (abs($rowDiff) === 2 && $colDiff === 2) {
+            // Определяем координаты клетки с вражеской шашкой
+            $middleRow = ($currentRow + $newRow) / 2;
+            $middleCol = ($currentCol + $newCol) / 2;
+
+            $middlePos = chr(ord('A') + $middleCol) . (8 - $middleRow); // Позиция вражеской шашки
+            $middlePawn = $this->desk->getPawn($middlePos);
+
+            if ($middlePawn !== null && $middlePawn->getColor() !== $this->color) {
+                // Проверяем, что следующая клетка свободна
+                if ($this->desk->getPawn($newPos) === null) {
+                    // Убираем вражескую шашку
+                    $this->desk->setPawn($middlePos, null);
+
+                    // Перемещаем текущую шашку
+                    $this->desk->setPawn($this->position, null); // Освобождаем текущую клетку
+                    $this->desk->setPawn($newPos, $this);        // Устанавливаем на новую клетку
+                    $this->position = $newPos;                  // Обновляем позицию
+                    return true;
+                }
+            }
+            return false; // Прыжок невозможен
+        }
+        return false; // Движение не соответствует правилам
+    }
+
 }
